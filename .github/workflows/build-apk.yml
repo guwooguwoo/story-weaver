@@ -29,7 +29,7 @@ jobs:
           mkdir -p www
           if [ -f "index.html" ] && [ ! -f "www/index.html" ]; then cp index.html www/index.html; fi
           if [ -f "storyweaver.html" ] && [ ! -f "www/index.html" ]; then cp storyweaver.html www/index.html; fi
-          if [ -f "icon-512.png" ] && [ ! -f "www/icon-512.png" ]; then cp icon-512.png www/icon-512.png; fi
+          if [ -f "icon.ico" ] && [ ! -f "www/icon.ico" ]; then cp icon.ico www/icon.ico; fi
           cat << 'EOF' > package.json
           {
             "name": "storyweaver",
@@ -53,6 +53,19 @@ jobs:
           npx cap init StoryWeaver com.storyweaver.app --web-dir www
           npx cap add android
           npx cap sync android
+
+      - name: Apply Custom .ico App Icon
+        run: |
+          if [ -f "www/icon.ico" ]; then
+            sudo apt-get update && sudo apt-get install -y imagemagick
+            for dir in android/app/src/main/res/mipmap-*; do
+              if [ -d "$dir" ]; then
+                convert "www/icon.ico[0]" -resize 192x192 "$dir/ic_launcher.png"
+                convert "www/icon.ico[0]" -resize 192x192 "$dir/ic_launcher_round.png"
+                convert "www/icon.ico[0]" -resize 192x192 "$dir/ic_launcher_foreground.png"
+              fi
+            done
+          fi
 
       - name: Build Debug APK
         run: |
