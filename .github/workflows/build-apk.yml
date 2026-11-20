@@ -58,11 +58,12 @@ jobs:
         run: |
           if [ -f "www/icon.ico" ]; then
             sudo apt-get update && sudo apt-get install -y imagemagick
+            rm -rf android/app/src/main/res/mipmap-anydpi-v26
             for dir in android/app/src/main/res/mipmap-*; do
               if [ -d "$dir" ]; then
-                convert "www/icon.ico[0]" -resize 192x192 "$dir/ic_launcher.png"
-                convert "www/icon.ico[0]" -resize 192x192 "$dir/ic_launcher_round.png"
-                convert "www/icon.ico[0]" -resize 192x192 "$dir/ic_launcher_foreground.png"
+                convert "www/icon.ico[0]" -resize 192x192 PNG32:"$dir/ic_launcher.png"
+                convert "www/icon.ico[0]" -resize 192x192 PNG32:"$dir/ic_launcher_round.png"
+                convert "www/icon.ico[0]" -resize 192x192 PNG32:"$dir/ic_launcher_foreground.png"
               fi
             done
           fi
