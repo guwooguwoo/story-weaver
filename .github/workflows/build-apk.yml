@@ -24,6 +24,27 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Prepare Web Assets & Package
+        run: |
+          mkdir -p www
+          if [ -f "index.html" ] && [ ! -f "www/index.html" ]; then cp index.html www/index.html; fi
+          if [ -f "storyweaver.html" ] && [ ! -f "www/index.html" ]; then cp storyweaver.html www/index.html; fi
+          if [ -f "icon-512.png" ] && [ ! -f "www/icon-512.png" ]; then cp icon-512.png www/icon-512.png; fi
+          cat << 'EOF' > package.json
+          {
+            "name": "storyweaver",
+            "version": "1.0.0",
+            "private": true,
+            "dependencies": {
+              "@capacitor/android": "^6.1.2",
+              "@capacitor/core": "^6.1.2"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "^6.1.2"
+            }
+          }
+          EOF
+
       - name: Install Capacitor & Generate Android Project
         run: |
           npm install
