@@ -29,22 +29,16 @@ jobs:
           npm install
           npx cap init StoryWeaver com.storyweaver.app --web-dir www
           npx cap add android
-          npx cap sync android
 
-      - name: Apply Custom App Icon (www/icon-512.png)
+      - name: Apply Custom PNG Icon (www/icon-512.png)
         run: |
           if [ -f "www/icon-512.png" ]; then
-            sudo apt-get update && sudo apt-get install -y imagemagick
-            for dir in android/app/src/main/res/mipmap-*; do
-              if [ -d "$dir" ]; then
-                convert www/icon-512.png -resize 192x192 "$dir/ic_launcher.png"
-                convert www/icon-512.png -resize 192x192 "$dir/ic_launcher_round.png"
-                convert www/icon-512.png -resize 288x288 -background none -gravity center -extent 432x432 "$dir/ic_launcher_foreground.png"
-              fi
-            done
-            mkdir -p android/app/src/main/res/values
-            printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="ic_launcher_background">#6366f1</color>\n</resources>\n' > android/app/src/main/res/values/ic_launcher_background.xml
+            mkdir -p assets
+            cp www/icon-512.png assets/icon-only.png
+            cp www/icon-512.png assets/icon-foreground.png
+            npx capacitor-assets generate --android --iconBackgroundColor '#6366f1'
           fi
+          npx cap sync android
 
       - name: Build Debug APK
         run: |
