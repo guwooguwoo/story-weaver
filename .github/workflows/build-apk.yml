@@ -32,15 +32,16 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Apply Custom App Icon (www/icon-512.png)
+      - name: Apply Custom App Icon
         run: |
           if [ -f "www/icon-512.png" ]; then
-            sudo apt-get update && sudo apt-get install -y imagemagick
+            sudo apt-get update
+            sudo apt-get install -y imagemagick
+
             for dir in android/app/src/main/res/mipmap-*; do
-              if [ -d "$dir" ]; then
+              if [ -d "$dir" ] && [ "$(basename "$dir")" != "mipmap-anydpi-v26" ]; then
                 convert www/icon-512.png -resize 192x192 "$dir/ic_launcher.png"
                 convert www/icon-512.png -resize 192x192 "$dir/ic_launcher_round.png"
-                convert www/icon-512.png -resize 432x432 "$dir/ic_launcher_foreground.png"
               fi
             done
           fi
