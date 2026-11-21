@@ -36,8 +36,13 @@ jobs:
       - name: 6. 준비된 투명 PNG 아이콘 자동 적용
         run: |
           if [ -f "assets/icon-only.png" ]; then
-            npx capacitor-assets generate --android --iconBackgroundColor '#ffffff'
+            cp -f assets/icon-only.png assets/icon.png
+            cp -f assets/icon-only.png assets/splash.png
+            npx @capacitor/assets generate --android --iconBackgroundColor '#ffffff' --splashBackgroundColor '#ffffff'
+          else
+            echo "⚠️ assets/icon-only.png 파일을 찾을 수 없습니다!"
           fi
+
 
       - name: 7. 안드로이드 파일 저장 권한(AndroidManifest.xml) 추가
         run: |
